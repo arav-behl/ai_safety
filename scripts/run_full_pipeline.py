@@ -85,10 +85,16 @@ def main():
     project_root = Path(__file__).parent.parent
     src_path = project_root / "src"
     env = os.environ.copy()
+    # Add src to PYTHONPATH
     if "PYTHONPATH" in env:
         env["PYTHONPATH"] = f"{src_path}:{env['PYTHONPATH']}"
     else:
         env["PYTHONPATH"] = str(src_path)
+    
+    # Also add to sys.path for subprocess calls
+    import sys
+    if str(src_path) not in sys.path:
+        sys.path.insert(0, str(src_path))
     
     # Step 1: Download and extract papers
     if not args.skip_download:

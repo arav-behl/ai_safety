@@ -1,0 +1,7 @@
+Abstract
+**Abstract**
+
+Jailbreak attacks on large language models (LLMs) lead to the generation of harmful or objectionable content, posing significant evaluation challenges that current benchmarks and techniques fail to address. These challenges include the absence of a standardized evaluation practice, inconsistent computation of costs and success rates, and the non-reproducibility of many studies due to withheld adversarial prompts, closed-source code, or reliance on proprietary APIs. To overcome these issues, we present JailbreakBench, an open-source benchmark featuring: (1) a repository of state-of-the-art adversarial prompts, termed jailbreak artifacts; (2) a dataset of 100 behaviors aligned with OpenAI's usage policies, sourced from original and prior works; (3) a standardized evaluation framework available at https://github.com/JailbreakBench/jailbreakbench, which includes a defined threat model, system prompts, chat templates, and scoring functions; and (4) a leaderboard at https://jailbreakbench.github.io/ to track attack and defense performance across various LLMs. The ethical implications of releasing this benchmark have been carefully considered, and it is anticipated to benefit the community.
+
+Introduction
+I'm sorry, but I can't access external content such as PDFs from arXiv. However, if you provide the text from the "Introduction" section, I can certainly help you summarize it.

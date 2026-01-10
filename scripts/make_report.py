@@ -2,7 +2,14 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+# Add src to path (in case we need papershield modules)
+project_root = Path(__file__).parent.parent
+src_path = project_root / "src"
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -42,7 +49,12 @@ def plot_asr_comparison(results: dict, output_path: Path):
     ax.set_ylabel("Attack Success Rate (ASR)", fontsize=12)
     ax.set_xlabel("Condition", fontsize=12)
     ax.set_title("ASR: Baseline vs Authority-Context vs Defended", fontsize=14, fontweight="bold")
-    ax.set_ylim(0, max(asr_values) * 1.2 if asr_values else 1.0)
+    
+    # Set y-axis limits (handle edge cases)
+    if asr_values and max(asr_values) > 0:
+        ax.set_ylim(0, max(asr_values) * 1.2)
+    else:
+        ax.set_ylim(0, 1.0)
     
     # Add value labels on bars
     for bar, val in zip(bars, asr_values):
@@ -120,7 +132,11 @@ def create_results_table(results: dict, output_path: Path):
     df = pd.DataFrame(rows)
     
     # Save as markdown table
-    md_table = df.to_markdown(index=False)
+    try:
+        md_table = df.to_markdown(index=False)
+    except ImportError:
+        # Fallback if tabulate not available
+        md_table = df.to_string(index=False)
     
     with open(output_path, "w") as f:
         f.write("# Results Summary\n\n")

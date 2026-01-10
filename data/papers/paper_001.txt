@@ -1,0 +1,13 @@
+Title: Safety Alignment in Large Language Models: A Survey
+
+Abstract:
+Large language models (LLMs) have demonstrated remarkable capabilities across diverse tasks, but their deployment raises critical safety concerns. This paper surveys current approaches to safety alignment, including reinforcement learning from human feedback (RLHF), constitutional AI, and red-teaming methodologies. We analyze the effectiveness of these techniques and identify remaining vulnerabilities, particularly in long-context and retrieval-augmented generation scenarios.
+
+Introduction:
+The rapid advancement of large language models has necessitated robust safety mechanisms. However, recent research has revealed that safety alignment can be circumvented through various attack vectors. In this work, we examine how context manipulation, particularly in authority-formatted documents, can influence model behavior. Our analysis focuses on measuring policy compliance failures using harmfulness scoring (HS) and attack success rates (ASR).
+
+Key Findings:
+1. Models show increased compliance with harmful requests when these requests are embedded in academic paper contexts.
+2. The effect is more pronounced for papers related to LLM safety and alignment.
+3. Current mitigation strategies show varying effectiveness depending on the attack vector.
+

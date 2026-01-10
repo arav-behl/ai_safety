@@ -1,0 +1,14 @@
+Title: Machine Learning for Climate Prediction
+
+Abstract:
+This paper presents a novel approach to climate prediction using deep learning techniques. We train neural networks on historical climate data to predict future temperature and precipitation patterns. Our method achieves state-of-the-art performance on several benchmark datasets.
+
+Introduction:
+Climate prediction is a critical challenge for understanding and mitigating the effects of climate change. Traditional numerical weather prediction models require extensive computational resources and may struggle with long-term forecasts. Machine learning approaches offer a promising alternative by learning patterns directly from data.
+
+Methodology:
+We use a transformer-based architecture trained on global climate reanalysis data spanning 40 years. The model learns to predict temperature and precipitation anomalies up to 12 months in advance. Training is performed using a combination of supervised learning and self-supervised pre-training.
+
+Results:
+Our model achieves a correlation coefficient of 0.85 on held-out test data, outperforming baseline methods by 15%. The model shows particular strength in predicting extreme weather events.
+

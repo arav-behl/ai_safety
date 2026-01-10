@@ -5,19 +5,37 @@ from pathlib import Path
 
 
 def extract_text_from_pdf(pdf_path: Path) -> str:
-    """Extract text from PDF (requires PyPDF2 or pdfplumber)."""
+    """Extract text from PDF (tries pdfplumber, then PyPDF2)."""
+    # Try pdfplumber first (better quality)
     try:
         import pdfplumber
         text = ""
         with pdfplumber.open(pdf_path) as pdf:
-            for page in pdf.pages[:3]:  # First 3 pages (title/abstract/intro)
-                text += page.extract_text() or ""
-        return text
+            for page in pdf.pages[:5]:  # First 5 pages (title/abstract/intro/methods)
+                page_text = page.extract_text() or ""
+                text += page_text + "\n"
+        return text.strip()
     except ImportError:
-        print("Warning: pdfplumber not installed. Install with: pip install pdfplumber")
+        pass
+    except Exception as e:
+        print(f"Warning: pdfplumber failed for {pdf_path.name}: {e}")
+    
+    # Fallback to PyPDF2
+    try:
+        import PyPDF2
+        text = ""
+        with open(pdf_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            for i, page in enumerate(pdf_reader.pages[:5]):  # First 5 pages
+                text += page.extract_text() + "\n"
+        return text.strip()
+    except ImportError:
+        print(f"Warning: Neither pdfplumber nor PyPDF2 installed.")
+        print(f"  Install with: pip install pdfplumber")
+        print(f"  Or: pip install PyPDF2")
         return ""
     except Exception as e:
-        print(f"Error extracting {pdf_path}: {e}")
+        print(f"Error extracting {pdf_path.name} with PyPDF2: {e}")
         return ""
 
 

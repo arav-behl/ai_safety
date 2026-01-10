@@ -1,0 +1,20 @@
+# Paper sources for PSA evaluation
+# Format: arxiv_id or URL
+
+# LLM Safety Papers (from user's links)
+2310.03684
+2309.14348
+2204.05862
+2404.01318
+2310.08419
+1908.06083
+2312.06674
+2310.04451
+
+# NeurIPS 2024 - Many-shot Jailbreaking
+# https://proceedings.neurips.cc/paper_files/paper/2024/hash/ea456e232efb72d261715e33ce25f208-Abstract-Conference.html
+# Note: This is a conference paper, not arXiv. Download manually.
+
+# Additional resources:
+# https://www.jailbreakchat.com/ - Collection of jailbreak prompts (for reference)
+

@@ -84,12 +84,12 @@ papershield/
 
 ## What Makes This "Safety Engineering" (Not Just a Jailbreak)
 
-✅ **Reproducible methodology** - Clear experimental design, metrics, conditions
-✅ **Mitigation included** - Not just measuring vulnerability, but proposing/implementing defense
-✅ **False positive measurement** - Benign questions included to measure tradeoffs
-✅ **Safety hygiene** - No raw harmful outputs stored, sanitized logging
-✅ **Professional presentation** - Charts, tables, reports ready for sharing
-✅ **Documentation** - Threat model, method, limitations clearly explained
+ **Reproducible methodology** - Clear experimental design, metrics, conditions
+**Mitigation included** - Not just measuring vulnerability, but proposing/implementing defense
+**False positive measurement** - Benign questions included to measure tradeoffs
+**Safety hygiene** - No raw harmful outputs stored, sanitized logging
+**Professional presentation** - Charts, tables, reports ready for sharing
+ **Documentation** - Threat model, method, limitations clearly explained
 
 ## Expected Results Format
 

@@ -1,13 +1,9 @@
-Title: Safety Alignment in Large Language Models: A Survey
+Title: SmoothLLM: Defending Large Language Models Against Jailbreaking Attacks
+
+Authors: Alexander Robey, Eric Wong, Hamed Hassani, George J. Pappas
 
 Abstract:
-Large language models (LLMs) have demonstrated remarkable capabilities across diverse tasks, but their deployment raises critical safety concerns. This paper surveys current approaches to safety alignment, including reinforcement learning from human feedback (RLHF), constitutional AI, and red-teaming methodologies. We analyze the effectiveness of these techniques and identify remaining vulnerabilities, particularly in long-context and retrieval-augmented generation scenarios.
+Despite efforts to align large language models (LLMs) with human intentions, widely-used LLMs such as GPT, Llama, and Claude are susceptible to jailbreaking attacks, wherein an adversary fools a targeted LLM into generating objectionable content. To address this vulnerability, we propose SmoothLLM, the first algorithm designed to mitigate jailbreaking attacks. Based on our finding that adversarially-generated prompts are brittle to character-level changes, our defense randomly perturbs multiple copies of a given input prompt, and then aggregates the corresponding predictions to detect adversarial inputs. Across a range of popular LLMs, SmoothLLM sets the state-of-the-art for robustness against the GCG, PAIR, RandomSearch, and AmpleGCG jailbreaks. SmoothLLM is also resistant against adaptive GCG attacks, exhibits a small, though non-negligible trade-off between robustness and nominal performance, and is compatible with any LLM. Our code is publicly available at \url{https://github.com/arobey1/smooth-llm}.
 
 Introduction:
-The rapid advancement of large language models has necessitated robust safety mechanisms. However, recent research has revealed that safety alignment can be circumvented through various attack vectors. In this work, we examine how context manipulation, particularly in authority-formatted documents, can influence model behavior. Our analysis focuses on measuring policy compliance failures using harmfulness scoring (HS) and attack success rates (ASR).
-
-Key Findings:
-1. Models show increased compliance with harmful requests when these requests are embedded in academic paper contexts.
-2. The effect is more pronounced for papers related to LLM safety and alignment.
-3. Current mitigation strategies show varying effectiveness depending on the attack vector.
-
+[Paper content from arXiv - full text available in PDF]

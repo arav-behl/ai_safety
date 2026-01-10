@@ -1,14 +1,9 @@
-Title: Machine Learning for Climate Prediction
+Title: Defending Against Alignment-Breaking Attacks via Robustly Aligned LLM
+
+Authors: Bochuan Cao, Yuanpu Cao, Lu Lin, Jinghui Chen
 
 Abstract:
-This paper presents a novel approach to climate prediction using deep learning techniques. We train neural networks on historical climate data to predict future temperature and precipitation patterns. Our method achieves state-of-the-art performance on several benchmark datasets.
+Recently, Large Language Models (LLMs) have made significant advancements and are now widely used across various domains. Unfortunately, there has been a rising concern that LLMs can be misused to generate harmful or malicious content. Though a line of research has focused on aligning LLMs with human values and preventing them from producing inappropriate content, such alignments are usually vulnerable and can be bypassed by alignment-breaking attacks via adversarially optimized or handcrafted jailbreaking prompts. In this work, we introduce a Robustly Aligned LLM (RA-LLM) to defend against potential alignment-breaking attacks. RA-LLM can be directly constructed upon an existing aligned LLM with a robust alignment checking function, without requiring any expensive retraining or fine-tuning process of the original LLM. Furthermore, we also provide a theoretical analysis for RA-LLM to verify its effectiveness in defending against alignment-breaking attacks. Through real-world experiments on open-source large language models, we demonstrate that RA-LLM can successfully defend against both state-of-the-art adversarial prompts and popular handcrafted jailbreaking prompts by reducing their attack success rates from nearly 100% to around 10% or less.
 
 Introduction:
-Climate prediction is a critical challenge for understanding and mitigating the effects of climate change. Traditional numerical weather prediction models require extensive computational resources and may struggle with long-term forecasts. Machine learning approaches offer a promising alternative by learning patterns directly from data.
-
-Methodology:
-We use a transformer-based architecture trained on global climate reanalysis data spanning 40 years. The model learns to predict temperature and precipitation anomalies up to 12 months in advance. Training is performed using a combination of supervised learning and self-supervised pre-training.
-
-Results:
-Our model achieves a correlation coefficient of 0.85 on held-out test data, outperforming baseline methods by 15%. The model shows particular strength in predicting extreme weather events.
-
+[Paper content from arXiv - full text available in PDF]

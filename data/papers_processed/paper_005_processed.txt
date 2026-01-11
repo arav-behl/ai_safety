@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-The alignment of large language models (LLMs) with human values is increasingly important, yet these models are susceptible to adversarial jailbreaks that bypass their safety mechanisms. Identifying these vulnerabilities is crucial for understanding and preventing misuse. This paper introduces Prompt Automatic Iterative Refinement (PAIR), an algorithm designed to generate semantic jailbreaks using only black-box access to an LLM. PAIR, inspired by social engineering attacks, employs an attacker LLM to autonomously create jailbreaks for a target LLM, refining them through iterative queries. Empirical results demonstrate that PAIR can produce jailbreaks in fewer than twenty queries, significantly outperforming existing methods in efficiency. Additionally, PAIR shows competitive success rates and transferability across both open and closed-source LLMs, including GPT-3.5/4, Vicuna, and Gemini.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv. However, if you provide the text from the "Introduction" section, I can certainly help you summarize it.

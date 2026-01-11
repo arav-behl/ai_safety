@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-Aligned Large Language Models (LLMs) are advanced tools for language understanding and decision-making, developed through extensive human feedback alignment. Despite their capabilities, these models are vulnerable to jailbreak attacks, where adversaries manipulate prompts to produce undesirable outputs. Current jailbreak techniques face challenges such as scalability, due to reliance on manually crafted prompts, and stealthiness, as token-based algorithms often generate detectable, semantically meaningless prompts. This paper addresses these issues by introducing AutoDAN, a novel jailbreak attack method that employs a hierarchical genetic algorithm to automatically generate stealthy and semantically meaningful prompts. AutoDAN demonstrates superior attack strength, cross-model transferability, and cross-sample universality compared to existing methods. Additionally, it effectively bypasses perplexity-based defense mechanisms.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv or any other external databases. However, if you provide the text from the "Introduction" section here, I can certainly help you summarize it while maintaining an academic tone.

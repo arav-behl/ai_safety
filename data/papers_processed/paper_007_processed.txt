@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-Llama Guard is an LLM-based safeguard model designed for Human-AI interactions, focusing on input-output safety. It utilizes a safety risk taxonomy for classifying safety risks in LLM prompts and responses, supported by a high-quality dataset. The Llama2-7b model, instruction-tuned on this dataset, shows strong performance on benchmarks like the OpenAI Moderation Evaluation dataset and ToxicChat, rivaling existing moderation tools. Llama Guard performs multi-class classification and generates binary decision scores, with instruction fine-tuning allowing task customization and output format adaptation. This flexibility supports taxonomy adjustments and zero-shot or few-shot prompting. The model weights are publicly available to encourage further research and adaptation for AI safety.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv or any other external databases. However, if you provide the text from the "Introduction" section, I can certainly help you summarize it.

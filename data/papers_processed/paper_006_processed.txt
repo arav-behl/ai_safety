@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-The detection of offensive language in dialogues is a crucial application of natural language processing, particularly in contexts such as public forums and chatbots, where adversarial behavior is prevalent. This study introduces a training scheme employing an iterative "build it, break it, fix it" strategy, involving both humans and models, to enhance model robustness against offensive language. Experimental results demonstrate that this approach surpasses previous systems in robustness. The study also highlights the importance of considering dialogue context in offensive language detection, as opposed to treating it as a single-sentence task. The newly developed tasks and methods will be made open source for public access.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv. However, if you provide the text from the "Introduction" section, I can certainly help you summarize it.

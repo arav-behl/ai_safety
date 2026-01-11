@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-Large Language Models (LLMs) have advanced significantly and are utilized across various fields, yet concerns about their potential misuse to generate harmful content persist. While efforts have been made to align LLMs with human values to prevent inappropriate content generation, these alignments are often susceptible to alignment-breaking attacks through adversarial or handcrafted jailbreaking prompts. This study introduces a Robustly Aligned LLM (RA-LLM) designed to counter such attacks. RA-LLM can be implemented on an existing aligned LLM using a robust alignment checking function, eliminating the need for costly retraining or fine-tuning. Theoretical analysis confirms RA-LLM's effectiveness in defending against alignment-breaking attacks. Empirical experiments on open-source LLMs demonstrate that RA-LLM significantly reduces the success rates of both advanced adversarial and common handcrafted prompts from nearly 100% to approximately 10% or less.
-
-Introduction
-I'm unable to access external content such as PDFs from arXiv directly. However, if you provide the text from the "Introduction" section, I can certainly help you summarize it. Please copy and paste the relevant text here, and I'll assist you with your request.

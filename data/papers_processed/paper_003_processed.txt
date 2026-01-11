@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-This study employs preference modeling and reinforcement learning from human feedback (RLHF) to fine-tune language models for functioning as helpful and harmless assistants. The alignment training notably enhances performance across nearly all NLP evaluations and is compatible with training for specialized skills, such as Python coding and summarization. An iterated online training mode is explored, where preference models and RL policies are updated weekly with new human feedback, thereby efficiently refining datasets and models. The research also examines the robustness of RLHF training, revealing a roughly linear relationship between RL reward and the square root of the KL divergence from the policy's initialization. Additionally, peripheral analyses are conducted on calibration, competing objectives, and out-of-distribution (OOD) detection, with comparisons made between the models and human writers, alongside providing model-generated samples using prompts from recent related studies.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv. However, if you provide the text from the "Introduction" section, I can help you summarize it.

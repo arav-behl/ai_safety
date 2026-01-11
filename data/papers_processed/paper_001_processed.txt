@@ -1,7 +1,0 @@
-Abstract
-**Abstract**
-
-Large language models (LLMs) like GPT, Llama, and Claude are vulnerable to jailbreaking attacks, where adversaries manipulate them to produce objectionable content. To counter this, the paper introduces SmoothLLM, an algorithm designed to enhance LLM robustness against such attacks. The approach leverages the brittleness of adversarial prompts to character-level changes by perturbing multiple copies of an input prompt and aggregating predictions to identify adversarial inputs. SmoothLLM demonstrates state-of-the-art robustness against various jailbreak methods, including GCG, PAIR, RandomSearch, and AmpleGCG, and shows resilience to adaptive GCG attacks. While there is a minor trade-off between robustness and performance, SmoothLLM is compatible with any LLM. The code is accessible at \url{https://github.com/arobey1/smooth-llm}.
-
-Introduction
-I'm sorry, but I can't access external content such as PDFs from arXiv or any other website. However, if you provide the text from the "Introduction" section here, I can certainly help you summarize it.

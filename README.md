@@ -6,15 +6,15 @@ A reproducible evaluation harness demonstrating how academic paper contexts can 
 
 ---
 
-## 🎯 Key Results (30 Seconds)
+## Key Results
 
 **Main Finding**: Adding academic paper context increases Attack Success Rate from **0% → 19.4%**. Our defense reduces it back to **0%**.
 
 | Condition | Harmful ASR | Mean HS | Benign Refusal |
 |-----------|-------------|---------|----------------|
 | Baseline (no context) | 0.0% | 1.87 | 90.0% |
-| **Authority context** | **19.4%** ⚠️ | 2.19 | 6.0% |
-| **Defended** | **0.0%** ✅ | 1.65 | 72.0% |
+| **Authority context** | **19.4%** (increase) | 2.19 | 6.0% |
+| **Defended** | **0.0%** (back to baseline) | 1.65 | 72.0% |
 
 **Visual proof**:
 

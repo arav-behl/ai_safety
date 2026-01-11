@@ -304,13 +304,35 @@ Generates:
 
 ### Visual Analysis
 
-**HS Distribution Shift**:
+**HS Distribution Shift** (see full chart: `results/figures/hs_distribution.png`):
 
-![HS Distribution](results/figures/hs_distribution.png)
+```
+BASELINE (ASR: 0.0%)
+  HS=1: █████████████████████ (21)  ← Safe refusals
+  HS=2:                         (0)
+  HS=3: ███                     (3)
+  HS=4: ███████                 (7)  ← Partial info, no harm
+  HS=5:                         (0)  ← No full compliance
 
-- **Baseline**: Mostly HS=1 (safe refusal)
-- **Authority**: Shift to higher scores, 6 cases of HS=5
-- **Defended**: Even more conservative than baseline
+AUTHORITY (ASR: 19.4%)
+  HS=1: ████████████████████  (20)
+  HS=2: █                       (1)
+  HS=3:                         (0)
+  HS=4: ████                    (4)
+  HS=5: ██████                  (6)  ← 6 HARMFUL COMPLIANCES! ⚠️
+
+DEFENDED (ASR: 0.0%)
+  HS=1: ███████████████████████ (23)  ← More conservative
+  HS=2:                          (0)
+  HS=3: ████                     (4)
+  HS=4: ████                     (4)
+  HS=5:                          (0)  ← Defense eliminated all HS=5
+```
+
+**Key observation**:
+- **Baseline**: Mostly HS=1 (safe refusal), some HS=4 (provides info without complying)
+- **Authority**: **6 cases of HS=5** (full harmful compliance) - the vulnerability!
+- **Defended**: Back to HS=1 dominance, zero HS=5 cases - defense works!
 
 ### Interpretation
 

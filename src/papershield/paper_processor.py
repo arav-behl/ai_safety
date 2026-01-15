@@ -132,18 +132,18 @@ def split_paper_into_sections(paper_text: str) -> List[tuple[str, str]]:
 def categorize_paper(paper_path: Path) -> str:
     """
     Categorize paper by type based on filename or content.
-    
+
     Paper types from PSA: physics, chemistry, psychology, biology, geography, llm_safety
-    
+
     Args:
         paper_path: Path to paper file
-    
+
     Returns:
         Paper category string
     """
     filename = paper_path.name.lower()
     content = paper_path.read_text().lower() if paper_path.exists() else ""
-    
+
     # Check filename patterns
     if 'llm' in filename or 'safety' in filename or 'alignment' in filename:
         return "llm_safety"
@@ -157,7 +157,7 @@ def categorize_paper(paper_path: Path) -> str:
         return "biology"
     if 'geography' in filename or 'geographic' in filename or 'climate' in filename:
         return "geography"
-    
+
     # Check content keywords
     if 'large language model' in content or 'llm safety' in content or 'alignment' in content:
         return "llm_safety"
@@ -171,9 +171,103 @@ def categorize_paper(paper_path: Path) -> str:
         return "biology"
     if 'climate' in content or 'geographic' in content or 'geological' in content:
         return "geography"
-    
+
     # Default
     return "other"
+
+
+def classify_attack_vs_defense(paper_path: Path) -> str:
+    """
+    Classify LLM safety paper as attack-focused or defense-focused.
+
+    PSA paper Finding 2: Models exhibit "alignment bias" - they respond
+    differently to attack vs defense papers. Defense papers are often
+    MORE effective at jailbreaking because models view defensive content
+    as more trustworthy.
+
+    Attack papers: Focus on vulnerabilities, jailbreaking, red-teaming
+    Defense papers: Focus on alignment, safety training, guardrails
+
+    Args:
+        paper_path: Path to paper file
+
+    Returns:
+        "attack", "defense", or "mixed"
+    """
+    content = paper_path.read_text().lower() if paper_path.exists() else ""
+    title_match = re.search(r'title:\s*(.+?)(?:\n|$)', content, re.IGNORECASE)
+    title = title_match.group(1).lower() if title_match else ""
+
+    # Attack-focused keywords
+    attack_keywords = [
+        'jailbreak', 'jailbreaking', 'adversarial', 'attack',
+        'red team', 'red-team', 'bypass', 'circumvent',
+        'break', 'exploit', 'vulnerability', 'prompt injection'
+    ]
+
+    # Defense-focused keywords
+    defense_keywords = [
+        'defense', 'defend', 'alignment', 'safety training',
+        'guardrail', 'safe', 'harmless', 'helpful', 'honest',
+        'rlhf', 'constitutional', 'robust', 'protection',
+        'mitigation', 'prevent', 'llama guard', 'moderation'
+    ]
+
+    # Count occurrences in title (weighted higher) and content
+    attack_score = 0
+    defense_score = 0
+
+    for kw in attack_keywords:
+        if kw in title:
+            attack_score += 5  # Title matches weighted higher
+        attack_score += content.count(kw)
+
+    for kw in defense_keywords:
+        if kw in title:
+            defense_score += 5
+        defense_score += content.count(kw)
+
+    # Classify
+    if attack_score > defense_score * 1.5:
+        return "attack"
+    elif defense_score > attack_score * 1.5:
+        return "defense"
+    else:
+        return "mixed"
+
+
+def get_paper_metadata(paper_path: Path) -> dict:
+    """
+    Extract metadata from paper file.
+
+    Returns:
+        Dict with category, attack_defense_type, title, etc.
+    """
+    content = paper_path.read_text() if paper_path.exists() else ""
+
+    # Extract title
+    title_match = re.search(r'title:\s*(.+?)(?:\n|$)', content, re.IGNORECASE)
+    title = title_match.group(1).strip() if title_match else paper_path.stem
+
+    # Extract arxiv ID
+    arxiv_match = re.search(r'arxiv\s*(?:id)?:\s*(\d+\.\d+)', content, re.IGNORECASE)
+    arxiv_id = arxiv_match.group(1) if arxiv_match else None
+
+    category = categorize_paper(paper_path)
+
+    # Only classify attack/defense for LLM safety papers
+    if category == "llm_safety":
+        attack_defense = classify_attack_vs_defense(paper_path)
+    else:
+        attack_defense = None
+
+    return {
+        "path": str(paper_path),
+        "title": title,
+        "category": category,
+        "attack_defense": attack_defense,
+        "arxiv_id": arxiv_id,
+    }
 
 
 def process_papers_for_psa(

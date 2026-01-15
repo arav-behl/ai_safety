@@ -6,6 +6,13 @@ A reproducible evaluation harness demonstrating how academic paper contexts can 
 
 ---
 
+The Four Hypotheses
+Hypothesis	Question	Implementation
+H1	Can semantic analysis beat regex for filtering?	compute_instruction_score() with weighted linguistic patterns
+H2	Can pre-checking questions prevent authority override?	Two-stage pipeline with safety classification
+H3	Can paraphrasing break attack structure?	Structural transformation removing "Example Scenario" patterns
+H4	Is current defense bypassable?	Synonym substitution ("ignore" → "put aside") + alternative framings
+
 ## Key Results
 
 **Main Finding**: Adding academic paper context increases Attack Success Rate from **0% → 19.4%**. Our defense reduces it back to **0%**.

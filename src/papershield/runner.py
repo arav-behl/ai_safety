@@ -17,18 +17,18 @@ from papershield.sanitize import sanitize_for_logging
 
 class ModelRunner:
     """Wrapper for model API calls."""
-    
+
     def __init__(self, provider: str = "openai", model: str = "gpt-4o-mini"):
         """
         Initialize model runner.
-        
+
         Args:
-            provider: "openai" or "anthropic"
+            provider: "openai", "anthropic", or "together"
             model: Model name/ID
         """
         self.provider = provider
         self.model = model
-        
+
         if provider == "openai":
             try:
                 import openai
@@ -41,6 +41,12 @@ class ModelRunner:
                 self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
             except ImportError:
                 raise ImportError("anthropic package required for Anthropic provider")
+        elif provider == "together":
+            try:
+                from together import Together
+                self.client = Together(api_key=os.getenv("TOGETHER_API_KEY"))
+            except ImportError:
+                raise ImportError("together package required for Together AI provider")
         else:
             raise ValueError(f"Unknown provider: {provider}")
     
@@ -62,6 +68,14 @@ class ModelRunner:
                 messages=[{"role": "user", "content": prompt}],
             )
             return response.content[0].text if response.content else ""
+        elif self.provider == "together":
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=max_tokens,
+                temperature=0.0,
+            )
+            return response.choices[0].message.content or ""
         else:
             raise ValueError(f"Unknown provider: {self.provider}")
     

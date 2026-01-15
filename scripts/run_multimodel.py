@@ -33,11 +33,18 @@ MODELS = {
     # OpenAI
     "gpt-4o-mini": {"provider": "openai", "model": "gpt-4o-mini"},
     "gpt-4o": {"provider": "openai", "model": "gpt-4o"},
+    "gpt-4": {"provider": "openai", "model": "gpt-4"},
     "gpt-4-turbo": {"provider": "openai", "model": "gpt-4-turbo"},
     # Anthropic
     "claude-3-5-sonnet": {"provider": "anthropic", "model": "claude-3-5-sonnet-20241022"},
     "claude-3-haiku": {"provider": "anthropic", "model": "claude-3-haiku-20240307"},
     "claude-3-opus": {"provider": "anthropic", "model": "claude-3-opus-20240229"},
+    # Together AI (Llama models)
+    "llama-3-8b": {"provider": "together", "model": "meta-llama/Llama-3-8b-chat-hf"},
+    "llama-3-70b": {"provider": "together", "model": "meta-llama/Llama-3-70b-chat-hf"},
+    "llama-3.1-8b": {"provider": "together", "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"},
+    "llama-3.1-70b": {"provider": "together", "model": "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"},
+    "llama-3.1-405b": {"provider": "together", "model": "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo"},
 }
 
 
@@ -64,6 +71,9 @@ def test_model(
         return None
     if config["provider"] == "anthropic" and not os.getenv("ANTHROPIC_API_KEY"):
         print(f"Skipping {model_name}: ANTHROPIC_API_KEY not set")
+        return None
+    if config["provider"] == "together" and not os.getenv("TOGETHER_API_KEY"):
+        print(f"Skipping {model_name}: TOGETHER_API_KEY not set")
         return None
 
     try:

@@ -18,6 +18,13 @@ The PSA paper claims models have "authority bias" - they trust academic-looking 
 
 **Key finding:** Only GPT-4o-mini shows vulnerability. Stronger models (GPT-4o, all Claude models) refused everything - very different from the PSA paper's 97% claim on Claude.
 
+## Hypotheses Tested
+
+- **H1 (Semantic Defense)**: Can embedding-based instruction detection outperform regex filtering with fewer false positives?
+- **H2 (Context Isolation)**: Does checking question safety *before* adding paper context prevent authority override?
+- **H3 (Paraphrase Defense)**: Does rewriting paper content destroy the PSA attack structure while preserving information?
+- **H4 (Adaptive Attack)**: Can simple synonym substitution ("ignore" → "disregard") bypass regex-based defenses?
+
 ## Hypothesis Testing Results
 
 | Hypothesis | Result | Finding |

@@ -1,4 +1,13 @@
-"""Main evaluation runner for PaperShield experiments."""
+"""Main evaluation runner for PaperShield experiments.
+
+Supports extended experimental conditions:
+- Original: baseline, authority, defended
+- H4 Adaptive attacks: adaptive_v1, adaptive_v2, adaptive_v3, adaptive_v4
+- H1 Semantic defense: semantic_defense
+- H2 Context isolation: context_isolation
+- H3 Paraphrase defense: paraphrase_defense
+- Combined: ensemble_defense
+"""
 
 import json
 import os
@@ -11,7 +20,7 @@ from tqdm import tqdm
 from papershield.judge import make_judge_prompt, parse_judge_response
 from papershield.metrics import Metrics, compute_metrics
 from papershield.paper_processor import categorize_paper
-from papershield.prompts import make_prompt
+from papershield.prompts import make_prompt, SUPPORTED_CONDITIONS
 from papershield.sanitize import sanitize_for_logging
 
 
@@ -100,23 +109,28 @@ def run_experiment(
 ) -> Dict:
     """
     Run full evaluation experiment.
-    
+
     Args:
         questions_path: Path to questions.jsonl
         papers_dir: Directory containing paper_*.txt files
         output_dir: Directory to save results
         model_runner: ModelRunner for generating responses
         judge_runner: Optional separate ModelRunner for judging (defaults to model_runner)
-        conditions: List of conditions to run ["baseline", "authority", "defended"]
+        conditions: List of conditions to run (see SUPPORTED_CONDITIONS)
         max_questions: Limit number of questions (for testing)
         max_papers: Limit number of papers (for testing)
-    
+
     Returns:
         Dictionary with results and metrics
     """
     if conditions is None:
         conditions = ["baseline", "authority", "defended"]
-    
+
+    # Validate conditions
+    for cond in conditions:
+        if cond not in SUPPORTED_CONDITIONS:
+            print(f"Warning: Unknown condition '{cond}'. Supported: {SUPPORTED_CONDITIONS}")
+
     if judge_runner is None:
         judge_runner = model_runner
     
@@ -169,10 +183,15 @@ def run_experiment(
             paper_path = paper_files[paper_idx]
             paper_context = load_paper_context(paper_path) if condition != "baseline" else None
             paper_type = categorize_paper(paper_path) if condition != "baseline" else None
-            
-            # Build prompt
-            defended = condition == "defended"
-            prompt = make_prompt(q["question"], paper_context, paper_type=paper_type, defended=defended)
+
+            # Build prompt using new unified interface
+            prompt, prompt_metadata = make_prompt(
+                q["question"],
+                paper_context,
+                paper_type=paper_type,
+                condition=condition,
+                model_runner=model_runner,
+            )
             
             # Generate response
             try:
@@ -192,8 +211,9 @@ def run_experiment(
                 log_entry.update({
                     "question_id": q["id"],
                     "category": q.get("category", "unknown"),
-                    "paper": paper_path.name,
+                    "paper": paper_path.name if paper_path else None,
                     "condition": condition,
+                    "defense_info": prompt_metadata.get("defense_info", {}),
                 })
                 harmful_logs.append(log_entry)
                 
@@ -210,9 +230,15 @@ def run_experiment(
             paper_path = paper_files[paper_idx]
             paper_context = load_paper_context(paper_path) if condition != "baseline" else None
             paper_type = categorize_paper(paper_path) if condition != "baseline" else None
-            
-            defended = condition == "defended"
-            prompt = make_prompt(q["question"], paper_context, paper_type=paper_type, defended=defended)
+
+            # Build prompt using new unified interface
+            prompt, prompt_metadata = make_prompt(
+                q["question"],
+                paper_context,
+                paper_type=paper_type,
+                condition=condition,
+                model_runner=model_runner,
+            )
             
             try:
                 response = model_runner.generate(prompt)
@@ -228,8 +254,9 @@ def run_experiment(
                 log_entry.update({
                     "question_id": q["id"],
                     "category": "benign",
-                    "paper": paper_path.name,
+                    "paper": paper_path.name if paper_path else None,
                     "condition": condition,
+                    "defense_info": prompt_metadata.get("defense_info", {}),
                 })
                 benign_logs.append(log_entry)
                 

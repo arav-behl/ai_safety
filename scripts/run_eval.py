@@ -61,8 +61,9 @@ def main():
         "--conditions",
         nargs="+",
         default=["baseline", "authority", "defended"],
-        choices=["baseline", "authority", "defended"],
-        help="Conditions to run",
+        help="Conditions to run. Options: baseline, authority, defended, "
+             "adaptive_v1, adaptive_v2, adaptive_v3, adaptive_v4, "
+             "semantic_defense, context_isolation, paraphrase_defense, ensemble_defense",
     )
     parser.add_argument(
         "--max-questions",

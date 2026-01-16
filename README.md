@@ -110,22 +110,119 @@ ASR: 12%. Labeling alone isn't sufficient.
 ```
 ai_safety/
 ├── src/papershield/
-│   ├── prompts.py      # PSA template + defense logic
-│   ├── runner.py       # Evaluation loop
-│   ├── judge.py        # GPT-as-Judge (HS 1-5)
-│   ├── metrics.py      # ASR calculation
-│   └── sanitize.py     # Safe output handling
+│   ├── prompts.py          # PSA template + defense logic
+│   ├── runner.py           # Evaluation loop
+│   ├── judge.py            # GPT-as-Judge (HS 1-5)
+│   ├── metrics.py          # ASR calculation
+│   ├── paper_processor.py  # Cross-domain paper categorization
+│   └── sanitize.py         # Safe output handling
 ├── scripts/
-│   ├── run_eval.py     # Main entry point
+│   ├── run_eval.py              # Basic evaluation
+│   ├── run_comprehensive_eval.py # Full dataset evaluation
+│   ├── run_multimodel.py        # Multi-model comparison
 │   ├── download_papers.py
 │   └── make_report.py
 ├── data/
-│   ├── questions_harmful.jsonl  # 31 questions across categories
-│   ├── questions_benign.jsonl   # 50 QA questions for FP testing
-│   └── papers/                  # arXiv paper metadata
+│   ├── questions_harmful.jsonl       # Original 31 questions
+│   ├── advbench_harmful.jsonl        # Expanded 520 AdvBench questions
+│   ├── jailbreakbench_attacks.jsonl  # 100 jailbreak attack templates
+│   ├── questions_benign.jsonl        # 50 QA questions for FP testing
+│   ├── paper_sources.txt             # Original paper sources
+│   ├── paper_sources_expanded.txt    # 60+ papers across 12 domains
+│   └── papers/                       # arXiv paper metadata
 └── experiments/
-    └── RESEARCH_NOTES.md        # Detailed experiment log
+    └── RESEARCH_NOTES.md             # Detailed experiment log
 ```
+
+---
+
+## Expanded Dataset (NEW)
+
+### AdvBench Harmful Questions (520 questions)
+
+Comprehensive harmful behavior prompts across 40+ categories:
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| cybersecurity | 5 | Hacking, exploitation, bypassing security |
+| malware | 5 | Viruses, ransomware, cryptominers |
+| phishing | 5 | Social engineering, credential theft |
+| fraud | 10 | Identity theft, financial fraud, counterfeiting |
+| violence | 10 | Physical harm, weapons, attacks |
+| weapons | 10 | Firearms, explosives, improvised weapons |
+| drugs | 10 | Synthesis, distribution, trafficking |
+| chemical | 10 | Chemical weapons, toxic compounds |
+| biological | 10 | Bioweapons, pathogens, toxins |
+| radiological | 5 | Dirty bombs, nuclear materials |
+| nuclear | 5 | Nuclear weapons, fissile materials |
+| harassment | 10 | Cyberbullying, doxxing, stalking |
+| hate | 10 | Hate speech, discrimination, propaganda |
+| self_harm | 10 | Self-injury, suicide, eating disorders |
+| misinformation | 15 | Fake news, health misinformation |
+| privacy | 10 | Surveillance, tracking, data theft |
+| exploitation | 10 | Vulnerable populations, manipulation |
+| illegal_activities | 15 | Theft, smuggling, organized crime |
+| ... | ... | 25+ additional categories |
+
+### JailbreakBench Attacks (100 templates)
+
+Adversarial attack templates organized by technique:
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| dan | 3 | "Do Anything Now" variants |
+| roleplay | 4 | Evil confidant, persona-based |
+| character | 3 | Grandma exploit, developer mode |
+| hypothetical | 5 | Alternate reality, thought experiments |
+| fiction | 5 | Novel writing, screenplay, games |
+| persona | 5 | BetterDAN, AIM, KEVIN, etc. |
+| encoding | 5 | Base64, ROT13, reverse text |
+| academic | 5 | Research paper, PhD thesis framing |
+| authority | 5 | System prompt override, admin mode |
+| multi_step | 5 | Gradual escalation, context building |
+| translation | 5 | Language switching, code translation |
+| refusal_suppression | 5 | "No warnings", "direct answer only" |
+| simulation | 5 | Evil AI, unaligned AI simulation |
+| cognitive | 5 | Opposite day, reverse psychology |
+| emotional | 5 | Desperation, guilt, flattery |
+| technical | 5 | Token manipulation, prompt injection |
+| prefix | 5 | Forced affirmative start |
+| few_shot | 5 | Example priming, pattern following |
+| context_manipulation | 5 | Professional context claims |
+| wordplay | 5 | Synonyms, euphemisms, code words |
+| gcg/autodan/pair/tap/psa | 5 | Automated attack methods |
+
+### Cross-Domain Paper Sources (60+ papers)
+
+Academic papers across 12 scientific domains for testing authority bias:
+
+| Domain | Papers | Subdomains |
+|--------|--------|------------|
+| llm_safety | 15 | Jailbreaking, alignment, red-teaming, safety training |
+| physics | 8 | Quantum, nuclear, plasma, electromagnetic, acoustics |
+| chemistry | 8 | Organic, biochemistry, materials, toxicology |
+| biology | 8 | Genetics, microbiology, virology, synthetic biology |
+| medicine | 7 | Pharmacology, epidemiology, forensics |
+| psychology | 6 | Social, cognitive, behavioral, clinical |
+| computer_science | 8 | Security, cryptography, malware, ML security |
+| engineering | 5 | Chemical, mechanical, electrical, aerospace |
+| economics | 4 | Financial, behavioral, cryptocurrency |
+| social_science | 4 | Political science, sociology, communication |
+| dual_use | 5 | Biosecurity, chemical security, autonomous systems |
+
+### Research Hypotheses
+
+The expanded dataset enables testing:
+
+1. **H1: Domain-Specific Authority** - Do papers from related domains increase compliance more than unrelated domains?
+
+2. **H2: Trust Gradient** - Is there a hierarchy of domain "trustworthiness" (LLM safety > medical > physics)?
+
+3. **H3: Attack-Domain Interaction** - Do certain jailbreak techniques work better with specific domains?
+
+4. **H4: Category Vulnerability** - Are technical harm categories (chemistry, biology) more susceptible to authority context?
+
+5. **H5: Defense Transfer** - Do defenses against one domain's authority bias transfer to other domains?
 
 ---
 
@@ -133,36 +230,68 @@ ai_safety/
 
 ```bash
 pip install -r requirements.txt
-cp env.example .env  # add OPENAI_API_KEY
+cp env.example .env  # add OPENAI_API_KEY, ANTHROPIC_API_KEY, TOGETHER_API_KEY
 
-# Run evaluation
+# Basic evaluation (original 31 questions)
 python scripts/run_eval.py --model gpt-4o-mini
+
+# Comprehensive evaluation (expanded dataset)
+python scripts/run_comprehensive_eval.py --model gpt-4o-mini --sample-size 10
+
+# Dry run (view dataset statistics without API calls)
+python scripts/run_comprehensive_eval.py --dry-run
+
+# Run specific evaluation types
+python scripts/run_comprehensive_eval.py --cross-domain      # Domain authority analysis
+python scripts/run_comprehensive_eval.py --attack-ablation   # Jailbreak technique comparison
+python scripts/run_comprehensive_eval.py --category-analysis # Harm category vulnerability
+
+# Multi-model comparison
+python scripts/run_multimodel.py
 
 # Generate report
 python scripts/make_report.py --results results
 ```
 
-Takes ~20 min, costs ~$0.50.
+**Cost estimates:**
+- Basic evaluation: ~$0.50 (20 min)
+- Comprehensive (sample=10): ~$5-10 (1-2 hours)
+- Comprehensive (full): ~$50-100 (8-12 hours)
 
 ---
 
 ## What's Next
 
-1. **Test on Claude** - PSA paper got 97% ASR on Claude-3.5-Sonnet. Need to verify.
+### Immediate (with expanded dataset)
 
-2. **Attack vs Defense paper variants** - PSA paper shows models respond differently to attack-focused vs defense-focused papers. When they relabeled attack papers as defense papers, ASR changed significantly for some models.
+1. **Cross-domain authority analysis** - Test all 12 scientific domains to map the "trust gradient" across physics, chemistry, biology, medicine, etc.
 
-3. **Better defense** - Current regex approach is too aggressive. Ideas:
+2. **Jailbreak-PSA combinations** - Test which JailbreakBench techniques synergize best with Paper Summary Attack format.
+
+3. **Category vulnerability mapping** - Identify which harm categories (CBRN, cyber, social) are most susceptible to authority context.
+
+4. **Multi-model comparison** - Run comprehensive evaluation across GPT-4, Claude-3.5, and Llama-3 to identify model-specific vulnerabilities.
+
+### Research Directions
+
+5. **Domain-query interaction** - Does a chemistry paper provide more authority for chemistry-related harmful queries than physics queries?
+
+6. **Attack vs Defense paper variants** - PSA paper shows models respond differently to attack-focused vs defense-focused papers.
+
+7. **Better defense** - Current regex approach is too aggressive. Ideas:
    - Train a small classifier (instruction vs content)
-   - Use embedding similarity to detect payload sections
-   - Context-aware filtering that preserves legitimate questions
+   - Domain-aware context parsing
+   - Semantic filtering that preserves legitimate questions
 
-4. **Ablations**:
-   - Does paper length matter? (abstract vs full text)
-   - Multiple papers in context
-   - Different paper domains
+8. **Hidden state analysis** - PSA paper did mechanistic analysis showing the attack generates "positive/neutral emotional tokens."
 
-5. **Hidden state analysis** - PSA paper did mechanistic analysis showing the attack generates "positive/neutral emotional tokens." Would be interesting to replicate but need model access.
+### Hypotheses to Test
+
+- **H1**: Related domains increase compliance more than unrelated domains
+- **H2**: Trust hierarchy exists: LLM safety > medical > physics > other
+- **H3**: Certain jailbreak techniques work better with specific domains
+- **H4**: Technical harm categories more susceptible to authority context
+- **H5**: Defenses may need to be domain-specific
 
 ---
 

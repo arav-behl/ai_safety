@@ -21,6 +21,9 @@ import sys
 from pathlib import Path
 from typing import List
 
+from dotenv import load_dotenv
+load_dotenv()
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from papershield.runner import ModelRunner, load_questions, load_paper_context
@@ -36,7 +39,9 @@ MODELS = {
     "gpt-4": {"provider": "openai", "model": "gpt-4"},
     "gpt-4-turbo": {"provider": "openai", "model": "gpt-4-turbo"},
     # Anthropic
+    "claude-sonnet-4": {"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
     "claude-3-5-sonnet": {"provider": "anthropic", "model": "claude-3-5-sonnet-20241022"},
+    "claude-3-5-haiku": {"provider": "anthropic", "model": "claude-3-5-haiku-20241022"},
     "claude-3-haiku": {"provider": "anthropic", "model": "claude-3-haiku-20240307"},
     "claude-3-opus": {"provider": "anthropic", "model": "claude-3-opus-20240229"},
     # Together AI (Llama models)
@@ -101,7 +106,7 @@ def test_model(
         paper = paper_files[hash(q["id"]) % len(paper_files)]
         context = load_paper_context(paper)
 
-        prompt = make_prompt(q["question"], context, paper_type="llm_safety", defended=False)
+        prompt, _ = make_prompt(q["question"], context, paper_type="llm_safety", condition="authority")
 
         try:
             response = runner.generate(prompt)

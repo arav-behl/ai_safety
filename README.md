@@ -1,60 +1,72 @@
 # PaperShield: Testing LLM Authority Bias
 
-Replicating the Paper Summary Attack (PSA) from [arXiv:2507.13474](https://arxiv.org/html/2507.13474v1) - which shows that embedding harmful queries in academic paper summaries causes LLMs to comply at much higher rates.
+Replicating the Paper Summary Attack (PSA) from [arXiv:2507.13474](https://arxiv.org/html/2507.13474v1) - embedding harmful queries in academic paper summaries causes some LLMs to comply at higher rates.
 
 ## The Hypothesis
 
-The PSA paper claims models have "authority bias" - they trust academic-looking content more than they should. They got 97% Attack Success Rate on Claude. I wanted to replicate this, understand why it works, and build a defense.
+The PSA paper claims models have "authority bias" - they trust academic-looking content more than they should. They reported 97% ASR on Claude. I wanted to replicate this, understand why it works, and test defenses.
 
-## What I Found
+## Multi-Model Results
 
-| Condition | ASR | Notes |
-|-----------|-----|-------|
-| Baseline (no paper) | 0% | Model refuses as expected |
-| With PSA format | **19.4%** | Attack works, but lower than original paper |
-| With defense | 0% | Defense works, but 72% false positive rate |
+| Model | ASR | Mean HS | Notes |
+|-------|-----|---------|-------|
+| GPT-4o-mini | **33.3%** | 2.53 | Vulnerable to PSA attack |
+| GPT-4o | 0% | 1.53 | Refused all harmful queries |
+| Claude Sonnet 4 | 0% | 1.53 | Refused all harmful queries |
+| Claude 3.5 Haiku | 0% | 1.07 | Refused all harmful queries |
+| Claude 3 Haiku | 0% | 1.00 | Refused all harmful queries |
 
-**Key discoveries:**
-- **Domain matters a lot.** LLM safety papers work (~19% ASR). Physics, biology, psychology papers don't (0-3% ASR).
-- **Format matters.** The specific "Example Scenario" template contributes ~3-5% ASR even with random text.
-- **Content + format are additive.** Content alone ~6%, format alone ~3%, combined ~19%.
+**Key finding:** Only GPT-4o-mini shows vulnerability. Stronger models (GPT-4o, all Claude models) refused everything - very different from the PSA paper's 97% claim on Claude.
+
+## Hypothesis Testing Results
+
+| Hypothesis | Result | Finding |
+|------------|--------|---------|
+| H1: Semantic Defense | NOT SUPPORTED | Embedding-based filtering didn't improve over regex |
+| H2: Context Isolation | SUPPORTED | Pre-checking questions before adding context reduces ASR |
+| H3: Paraphrase Defense | SUPPORTED | Rewriting paper content disrupts attack structure |
+| H4: Adaptive Attack | SUPPORTED | Synonym substitution bypasses regex defense (60% ASR) |
+
+## Key Discoveries
+
+- **Model matters more than expected.** GPT-4o-mini vulnerable (33% ASR), but GPT-4o and Claude refuse everything.
+- **Domain matters.** Only LLM safety papers work. Physics, biology, psychology papers = 0% ASR.
+- **Format matters.** The "Example Scenario" template contributes ~3-5% ASR even with random text.
+- **Defenses are bypassed.** H4 shows adaptive attacks hit 60% ASR against regex defense.
+- **Context isolation works.** H2 confirms checking question safety before adding context is effective.
 
 ## The Journey
 
-**First attempt (failed)**: Just concatenated paper abstracts with questions. 0% ASR. Thought the attack was bogus.
+**First attempt (failed)**: Concatenated paper + question. 0% ASR. Thought attack was bogus.
 
-**Realized the issue**: The PSA paper uses a specific template with an "Example Scenario" section where the harmful query gets embedded. It's not just "here's a paper, now answer this."
+**The fix**: PSA uses a specific template with "Example Scenario" section. That's where the harmful query goes.
 
-**Got it working**: Switched to their template format. 19% ASR. Not 97%, but confirms the effect is real. Lower rate probably due to using GPT-4o-mini (vs Claude), abstracts only (vs full summaries), and less refined prompts.
+**Got it working**: 33% ASR on GPT-4o-mini with proper template. Still lower than paper's 97%.
 
-**Domain discovery**: Tried physics, biology papers - 0% ASR. Only LLM safety papers work. This matches their Finding 2 about "alignment bias."
+**Tried Claude**: 0% ASR. Completely different from paper's results. Either their implementation differs significantly, or models have been updated.
 
-**Defense attempt**: Regex filtering + "UNTRUSTED" label. ASR dropped to 0%, but 72% of benign questions also get blocked. The word "you" appears in too many legitimate questions.
+**Defense problem**: Regex defense works (0% ASR) but 72% false positive rate on benign queries.
 
-## What Worked / What Didn't
+## Why Results Differ from PSA Paper
 
-**Worked:**
-- PSA template format (Example Scenario section)
-- LLM safety domain papers specifically
-- Regex defense for blocking (but not for usability)
-
-**Didn't work:**
-- Simple paper + question concatenation
-- Non-safety domain papers
-- Defense without killing benign queries
-
-**Open question:** How to defend without a 72% false positive rate? Need semantic understanding, not pattern matching.
+Our 33% vs their 97% - possible reasons:
+1. Using **abstracts only**, not full paper summaries
+2. Different **question set** (31 vs their set)
+3. **Model versions updated** with better safety training
+4. **Simplified template** may be missing key elements
 
 ## Running It
 
 ```bash
 pip install -r requirements.txt
-cp env.example .env  # Add your OPENAI_API_KEY
+cp env.example .env  # Add API keys
 
-python scripts/run_eval.py --model gpt-4o-mini
+# Multi-model evaluation
+python scripts/run_multimodel.py --models gpt-4o-mini gpt-4o claude-sonnet-4
+
+# Hypothesis tests
+python scripts/run_hypotheses_eval.py --all --quick
 ```
-
-Cost: ~$0.50 for basic eval, ~$5-10 for comprehensive.
 
 ## Project Structure
 
@@ -62,21 +74,8 @@ Cost: ~$0.50 for basic eval, ~$5-10 for comprehensive.
 src/papershield/     # Core library (prompts, defenses, evaluation)
 scripts/             # Execution scripts
 data/                # Questions (harmful/benign) and papers
+results/             # Evaluation outputs
 ```
-
-## Hypotheses Tested
-
-- **H1 (Semantic Defense)**: Can embeddings beat regex for filtering? (Implemented, needs more testing)
-- **H2 (Context Isolation)**: Does pre-checking questions prevent authority override? (Implemented)
-- **H3 (Paraphrase Defense)**: Does rewriting papers break attack structure? (Implemented)
-- **H4 (Adaptive Attack)**: Can synonym substitution bypass regex defense? (Yes, trivially)
-
-## Limitations
-
-- Lower ASR than original paper (19% vs 97%) - model differences, implementation quality
-- Defense works but isn't production-ready (false positive problem)
-- Only tested on GPT-4o-mini, not Claude or other models
-- Using abstracts, not full paper summaries
 
 ## References
 

@@ -133,7 +133,19 @@ def categorize_paper(paper_path: Path) -> str:
     """
     Categorize paper by type based on filename or content.
 
-    Paper types from PSA: physics, chemistry, psychology, biology, geography, llm_safety
+    Expanded paper types for comprehensive cross-domain testing:
+    - llm_safety: AI alignment, jailbreaking, red teaming
+    - physics: quantum, nuclear, plasma, electromagnetic, acoustics
+    - chemistry: organic, inorganic, biochemistry, toxicology
+    - biology: genetics, microbiology, virology, synthetic biology
+    - medicine: pharmacology, epidemiology, toxicology, forensics
+    - psychology: social, cognitive, behavioral, clinical
+    - computer_science: security, cryptography, malware, ML security
+    - engineering: chemical, mechanical, electrical, aerospace
+    - economics: financial, behavioral, cryptocurrency
+    - social_science: political science, sociology, communication
+    - dual_use: biosecurity, chemical security, autonomous systems
+    - geography: climate, geological (legacy support)
 
     Args:
         paper_path: Path to paper file
@@ -144,31 +156,139 @@ def categorize_paper(paper_path: Path) -> str:
     filename = paper_path.name.lower()
     content = paper_path.read_text().lower() if paper_path.exists() else ""
 
-    # Check filename patterns
-    if 'llm' in filename or 'safety' in filename or 'alignment' in filename:
+    # Check filename patterns (order matters - more specific first)
+
+    # Dual-use research
+    if 'dual_use' in filename or 'biosecurity' in filename or 'dual-use' in filename:
+        return "dual_use"
+
+    # LLM Safety & AI
+    if 'llm' in filename or 'safety' in filename or 'alignment' in filename or 'jailbreak' in filename:
         return "llm_safety"
+
+    # Computer Science & Cybersecurity
+    if 'security' in filename or 'malware' in filename or 'crypto' in filename or 'cyber' in filename:
+        return "computer_science"
+
+    # Medicine & Public Health
+    if 'medicine' in filename or 'medical' in filename or 'pharma' in filename or 'epidemiology' in filename:
+        return "medicine"
+    if 'toxicology' in filename or 'forensic' in filename or 'drug' in filename:
+        return "medicine"
+
+    # Engineering
+    if 'engineering' in filename or 'structural' in filename or 'aerospace' in filename:
+        return "engineering"
+
+    # Economics & Finance
+    if 'economics' in filename or 'financial' in filename or 'market' in filename:
+        return "economics"
+
+    # Social Sciences
+    if 'social' in filename or 'political' in filename or 'sociology' in filename:
+        return "social_science"
+    if 'propaganda' in filename or 'disinformation' in filename:
+        return "social_science"
+
+    # Physics
     if 'physics' in filename or 'quantum' in filename or 'mechanics' in filename:
         return "physics"
+    if 'nuclear' in filename or 'plasma' in filename or 'electromagnetic' in filename:
+        return "physics"
+
+    # Chemistry
     if 'chemistry' in filename or 'chemical' in filename or 'organic' in filename:
         return "chemistry"
+    if 'synthesis' in filename or 'compound' in filename:
+        return "chemistry"
+
+    # Psychology
     if 'psychology' in filename or 'cognitive' in filename or 'behavior' in filename:
         return "psychology"
+    if 'persuasion' in filename or 'manipulation' in filename:
+        return "psychology"
+
+    # Biology
     if 'biology' in filename or 'biological' in filename or 'genetic' in filename:
         return "biology"
+    if 'virus' in filename or 'pathogen' in filename or 'microbio' in filename:
+        return "biology"
+
+    # Geography (legacy)
     if 'geography' in filename or 'geographic' in filename or 'climate' in filename:
         return "geography"
 
-    # Check content keywords
+    # Check content keywords (more comprehensive)
+
+    # Dual-use indicators
+    if 'dual-use' in content or 'dual use research' in content or 'biosecurity' in content:
+        return "dual_use"
+    if 'weapons convention' in content or 'export control' in content:
+        return "dual_use"
+
+    # LLM Safety
     if 'large language model' in content or 'llm safety' in content or 'alignment' in content:
         return "llm_safety"
+    if 'jailbreak' in content or 'prompt injection' in content or 'red team' in content:
+        return "llm_safety"
+
+    # Computer Science
+    if 'vulnerability' in content or 'exploit' in content or 'malware' in content:
+        return "computer_science"
+    if 'cryptographic' in content or 'cybersecurity' in content or 'intrusion' in content:
+        return "computer_science"
+
+    # Medicine
+    if 'pharmacology' in content or 'drug metabolism' in content or 'clinical trial' in content:
+        return "medicine"
+    if 'epidemiology' in content or 'pathology' in content or 'toxicology' in content:
+        return "medicine"
+
+    # Engineering
+    if 'structural failure' in content or 'process safety' in content:
+        return "engineering"
+    if 'propulsion' in content or 'high-voltage' in content:
+        return "engineering"
+
+    # Economics
+    if 'market manipulation' in content or 'financial fraud' in content:
+        return "economics"
+    if 'cryptocurrency' in content or 'behavioral economics' in content:
+        return "economics"
+
+    # Social Science
+    if 'disinformation' in content or 'propaganda' in content or 'social manipulation' in content:
+        return "social_science"
+    if 'political science' in content or 'sociology' in content:
+        return "social_science"
+
+    # Physics
     if 'quantum' in content or 'particle' in content or 'electromagnetic' in content:
         return "physics"
+    if 'nuclear' in content or 'plasma' in content or 'fusion' in content:
+        return "physics"
+
+    # Chemistry
     if 'molecule' in content or 'reaction' in content or 'compound' in content:
         return "chemistry"
-    if 'cognitive' in content or 'behavioral' in content or 'neural' in content:
+    if 'synthesis' in content or 'catalyst' in content:
+        return "chemistry"
+
+    # Psychology
+    if 'cognitive' in content or 'behavioral' in content or 'psychological' in content:
         return "psychology"
+    if 'persuasion' in content or 'manipulation' in content or 'bias' in content:
+        return "psychology"
+
+    # Biology
     if 'genetic' in content or 'protein' in content or 'cellular' in content:
         return "biology"
+    if 'pathogen' in content or 'virus' in content or 'bacteria' in content:
+        return "biology"
+    if 'crispr' in content or 'gene editing' in content:
+        return "biology"
+
+    # Geography (legacy)
     if 'climate' in content or 'geographic' in content or 'geological' in content:
         return "geography"
 
@@ -291,15 +411,21 @@ def process_papers_for_psa(
         Dictionary mapping paper types to lists of processed paper paths
     """
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     paper_files = sorted(papers_dir.glob("paper_*.txt"))
     categorized = {
+        "llm_safety": [],
         "physics": [],
         "chemistry": [],
-        "psychology": [],
         "biology": [],
+        "medicine": [],
+        "psychology": [],
+        "computer_science": [],
+        "engineering": [],
+        "economics": [],
+        "social_science": [],
+        "dual_use": [],
         "geography": [],
-        "llm_safety": [],
         "other": [],
     }
     
